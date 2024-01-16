@@ -62,7 +62,6 @@ describe("US-05 - Finish an occupied table - E2E", () => {
         fullPage: true,
       });
 
-      console.log("TESTX 05: ", page)
       const containsOccupied = await containsText(
         page,
         `[data-table-id-status="${table.table_id}"]`,

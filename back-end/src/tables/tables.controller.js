@@ -58,7 +58,6 @@ async function validateTableData(req, res, next) {
 }
 
 async function validateSeatingData(req, res, next) {
-   console.log("Are we hitting?")
   if (!req.body.data === undefined) {
     return res.status(400).json({ error: 'Missing request data.' });
   }

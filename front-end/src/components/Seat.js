@@ -34,7 +34,7 @@ function Seat() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const abortController = new AbortController();
+    //const abortController = new AbortController();
 
     try {
       // add reservation_id to table

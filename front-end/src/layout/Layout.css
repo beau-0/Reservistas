@@ -1,0 +1,79 @@
+.side-bar {
+  background: linear-gradient(to bottom right, #000000, #676666);
+  min-width: 200px;
+  max-width: 200px;
+}
+
+/* Dashboard.css */
+
+
+
+.jumbotron {
+  padding: 0; /* Remove padding */
+  margin-bottom: 0; /* Remove margin */
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* Adjust overlay background color and opacity */
+}
+
+.jumbotron-content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.nav-section {
+  display: flex;
+  align-items: center;
+  justify-content: left; /* Optional: Adjust if you want space between buttons */
+  margin-top: 30px;
+  margin-left: 20px;
+  margin-bottom: 40px;
+}
+
+.nav-buttons {
+  margin-right: 40px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.466);
+  background-color: rgb(210, 209, 207);
+}
+
+.reservations-section {
+  margin-left: 30px;
+}
+
+.table-section{
+  margin-left: 30px;
+}
+
+.add-table {
+  margin: 15px;
+}
+
+.new-reservation {
+  margin: 15px;
+
+}
+
+.table-outline {
+  border-collapse: collapse;
+  border: 2px solid rgb(172, 172, 171);
+}
+
+.dash-buttons {
+  border-radius: 5px; /* Adjust border-radius for rounded corners */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Define light box shadow */
+  cursor: pointer;
+  transition: box-shadow 0.3s ease; 
+ 
+}
+
+.custom-background {
+
+}

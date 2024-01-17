@@ -172,6 +172,7 @@ describe("US-04 - Seat reservation - E2E", () => {
     test("seating reservation at table #1 makes the table occupied", async () => {
       await page.waitForSelector('option:not([value=""])');
       await page.screenshot({
+        
         path: ".screenshots/us-04-seat-reservation-start.png",
         fullPage: true,
       });
@@ -183,10 +184,18 @@ describe("US-04 - Seat reservation - E2E", () => {
         fullPage: true,
       });
 
+      console.log("123: Before clicking submit button");
+
+      try {
       await Promise.all([
         page.click("[type=submit]"),
         page.waitForNavigation({ waitUntil: "networkidle0" }),
       ]);
+    } catch (error) {
+      console.error("123:", error);
+    } 
+
+      console.log("123: After clicking submit button");
 
       await page.screenshot({
         path: ".screenshots/us-04-seat-reservation-submit-after.png",

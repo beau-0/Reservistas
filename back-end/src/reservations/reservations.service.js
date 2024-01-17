@@ -15,10 +15,23 @@ function create (reservationData) {
     }
 }
 
-function updateReservationStatus(reservation_id, status) {
+function updateReservationStatus(reservation_id, status, table_id) {
+  if(table_id) {
+    return knex('tables')
+        .where({ table_id }, )
+        .update({ reservation_id: null, occupied: false }, ["*"])
+        .then(() => {
+          return knex("reservations")
+            .where({ reservation_id })
+            .update({ status: status}, "*")
+            .then((newRecords) => newRecords[0])
+        })
+  } else {
     return knex("reservations")
-      .where({ reservation_id })
-      .update({ status }, ["*"]);
+    .where({ reservation_id })
+    .update({ status: status}, "*")
+    .then((newRecords) => newRecords[0])
+  }
 }
 
 function list (date) {

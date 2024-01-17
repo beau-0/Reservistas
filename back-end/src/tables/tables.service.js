@@ -1,9 +1,18 @@
 const knex = require("../db/connection"); 
 
-function assignTable(table_id, reservation_id) {
-    return knex("tables")
+function updateTable(table_id, reservation_id) {
+    if (reservation_id) {
+        return knex('tables')
         .where({ table_id }, )
         .update({ reservation_id, occupied: true }, ["*"])
+        .then((table) => {
+          return knex("reservations")
+            .where({ reservation_id })
+            .update({ status: "seated"}, "*")
+            .then((newRecords) => newRecords[0])
+        })
+     
+    }    
 }
 
 function getTableByName(tableName) {
@@ -52,7 +61,7 @@ async function unseatTable(table_id) {
 }
 
 module.exports = {
-    assignTable,
+    updateTable,
     getTableByName, 
     getReservationById, 
     createTable, 

@@ -109,7 +109,7 @@ async function list(req, res) {
   }
 }
 
-async function seatTable(req, res) {
+async function updateTable(req, res) {
 
   const {table_id} = req.params;
   const reservation_id = req.body.data.reservation_id;
@@ -121,11 +121,8 @@ async function seatTable(req, res) {
     return res.status(400).json({ error: `Reservation ${reservation_id} is already seated.` });
   }
 
-  // assign reservation_id to table
-  await service.assignTable(table_id, reservation_id);
-
-  // update reservation status from "booked" to "seated          "
-  await reservationsService.updateReservationStatus(reservation_id, newStatus);
+  // assign reservation_id to table, update reservation status to "seated"
+  await service.updateTable(table_id, reservation_id);
 
   res.status(200).json({ message: 'Table assigned successfully' });
 } 
@@ -146,7 +143,7 @@ async function unseatTable (req, res) {
 }
 
 module.exports = {
-    update: [validateSeatingData, asyncErrorBoundary(seatTable)],
+    update: [validateSeatingData, asyncErrorBoundary(updateTable)],
     create: [validateTableData, asyncErrorBoundary(create)],
     list,
     delete: [tableExists, tableOccupied, unseatTable]

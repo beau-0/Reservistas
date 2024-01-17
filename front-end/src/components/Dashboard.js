@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { listReservations, updateReservation, fetchTables, finishTable } from "../utils/api";
+import { listReservations, updateReservation, updateReservationStatus, listTables } from "../utils/api";
 import ErrorAlert from "../layout/ErrorAlert";
 import { Link } from "react-router-dom";
+import useQuery from "../utils/useQuery";
 
 /**
  * Defines the dashboard page.
@@ -11,31 +12,32 @@ import { Link } from "react-router-dom";
  */
 
 function Dashboard({ date }) {
-  const [displayDate, setDisplayDate] = useState(date);
+  const query = useQuery();
+  const [displayDate, setDisplayDate] = useState(query.get("date") || date);
   const [reservations, setReservations] = useState([]);
   const [tables, setTables] = useState([]);  
   const [errors, setErrors] = useState({});
+
   const abortController = new AbortController();
-  let isMounted = true;
 
   const loadDashboard = async () => {
+    const abortController = new AbortController();
+    setErrors({});
 
     try {
       // Fetch reservations for provided date
-      const reservationsData = await listReservations({ date: displayDate });
+      const reservationsData = await listReservations({ date: displayDate }, abortController.signal);
 
       // Filter out finished reservations
       const activeReservations = reservationsData.filter(
         (reservation) => reservation.status !== "finished"
       );
-      // Fetch all tables
-      const tablesData = await fetchTables();
-      if (isMounted) {
-        setReservations(activeReservations);
-        setTables(tablesData);
-        setErrors({});
 
-      }
+      // Fetch all tables
+      const tablesData = await listTables(abortController.signal);
+      
+      setReservations(activeReservations);
+      setTables(tablesData);
     } catch (error) {
       console.error("Error loading dashboard data:", error);
         setErrors(error.message);
@@ -44,9 +46,7 @@ function Dashboard({ date }) {
 
   useEffect(() => {
     loadDashboard();
-
     return () => {
-      isMounted = false;
       abortController.abort();
     }
   }, [displayDate]);   
@@ -109,8 +109,8 @@ function Dashboard({ date }) {
 
     if (isConfirmed) {
       try {
-        // Send DELETE request to release the table
-        await finishTable(table_id);
+        // Send DELETE request to release the table, update reservation to seated
+        await updateReservationStatus(reservation_id, {data: {status: "finished", table_id: table_id }});
 
         loadDashboard();
       } catch (error) {

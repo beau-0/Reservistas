@@ -1,16 +1,13 @@
 import React, { useState, useEffect } from "react";
-import {
-  fetchTables,
-  updateTable,
-  updateReservationStatus,
-} from "../utils/api";
+import {listTables, updateTable } from "../utils/api";
 import { useHistory, useParams } from "react-router-dom";
 
 function Seat() {
+
   const history = useHistory();
   const { reservation_id } = useParams();
   const [tables, setTables] = useState([]);
-  const [selectedTable, setSelectedTable] = useState();
+  const [tableID, setTableID] = useState();
   const [errors, setErrors] = useState(null);
 
   useEffect(() => {
@@ -18,18 +15,19 @@ function Seat() {
     setErrors(null);
     async function loadTables() {
       try {
-        const response = await fetchTables(abortController.signal);
+        const response = await listTables(abortController.signal);
         setTables(response);
       } catch (error) {
         setErrors(error);
       }
     }
+
     loadTables();
     return () => abortController.abort();
   }, []);
 
   function handleTableSelect({ target: { value } }) {
-    setSelectedTable(value);
+    setTableID(value);
   }
 
   const handleSubmit = async (e) => {
@@ -37,13 +35,8 @@ function Seat() {
     //const abortController = new AbortController();
 
     try {
-      // add reservation_id to table
-      await updateTable(selectedTable, reservation_id);
-
-      // Update reservation status to "seated"
-      await updateReservationStatus(reservation_id, {
-        data: { status: "seated" },
-      });
+      // add reservation_id to table, update reservation to "seated"
+      await updateTable(tableID, reservation_id);
 
       // return user to dashboard
       history.push(`/dashboard`);
@@ -67,9 +60,9 @@ function Seat() {
           name="table_id"
           id="tables"
           onChange={handleTableSelect}
-          value={selectedTable}
+          value={tableID}
         >
-          <option value="">Select a table</option>
+          <option value="0">Select a table</option>
           {tables.map((table) => (
             <option key={table.table_id} value={table.table_id}>
               {`${table.table_name} - ${table.capacity}`}

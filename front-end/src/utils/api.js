@@ -135,7 +135,8 @@ export async function updateReservation(reservationId, updatedReservation) {
 
 
 // instructions require different endpoint for a status update than other reservation updates 
-export async function updateReservationStatus(reservationId, param) {
+export async function updateReservationStatus(reservationId, param, table_id) {
+
   try {
     const response = await fetch(`${API_BASE_URL}/reservations/${reservationId}/status`, {
       method: 'PUT',
@@ -150,7 +151,6 @@ export async function updateReservationStatus(reservationId, param) {
     throw new Error(`Failed to update reservation status: ${error.message}`);
   }
   };
-
 
 // TABLES
 export async function createTable (tableData) {
@@ -198,9 +198,9 @@ export async function assignTable (table_id, reservation_id) {
   return responseData.data;
 }
 
-export async function fetchTables() {
+export async function listTables(signal) {
   try {
-      const response = await fetch(`${API_BASE_URL}/tables`);
+      const response = await fetch(`${API_BASE_URL}/tables`, { signal });
       
       if (!response.ok) {
           throw new Error("Failed to fetch tables.");
@@ -275,28 +275,3 @@ export async function listPhones (phoneNumber) {
 
 
 
-
-// testing
-/*export async function updateReservationStatus(reservationId, updatedReservation) {
-  try {
-    const response = await fetch(`${API_BASE_URL}/reservations/${reservationId}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ data: updatedReservation }  ),
-    });
-
-    if (!response.ok) {
-      const errorResponse = await response.json();
-      console.error("Error updating reservation:", errorResponse);
-      throw new Error(`Failed to update reservation. ${errorResponse.error || ''}`);
-    }
-
-    const data = await response.json();
-    return data; 
-  } catch (error) {
-    console.error("Error updating reservation:", error.message);
-    throw error;
-  }
-} */

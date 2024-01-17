@@ -165,14 +165,16 @@ async function updateReservationStatus(req, res, next) {
 
   const { reservation_id } = req.params;
   const { status } = req.body.data;
+  const {table_id} = req.body.data;
 
   try {
     const updatedReservation = await service.updateReservationStatus(
       reservation_id,
-      status
+      status, 
+      table_id,
     );
 
-    res.status(200).json({ data: { status: req.body.data.status } });
+    res.status(200).json({ data: updatedReservation });
   } catch (error) {
     next(error);
   }

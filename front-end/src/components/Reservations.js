@@ -1,141 +1,72 @@
-import React, { useState } from "react";
-import { Link, useHistory } from "react-router-dom";
+import React from "react";
+import { Link } from "react-router-dom";
 import ErrorAlert from "../layout/ErrorAlert";
-import { createReservation} from "../utils/api";
 
-function Reservations () {
-
-    const [firstName, setFirstName] = useState("");
-    const [lastName, setLastName] = useState("");
-    const [mobileNumber, setMobileNumber] = useState("");
-    const [reservationDate, setReservationDate] = useState("");
-    const [reservationTime, setReservationTime] = useState("");
-    const [people, setPeople] = useState("");
-    const history = useHistory();
-    const [errors, setErrors] = useState({});
-
-    const handleSubmit = async (event) => {
-        event.preventDefault();
-        
-        const newReservation = {
-            data: {
-                first_name: firstName, 
-                last_name: lastName,
-                mobile_number: mobileNumber,
-                reservation_date: reservationDate,
-                reservation_time: reservationTime,
-                people: Number(people)
-            }
-        };
-
-        try {
-            const createdReservation = await createReservation(newReservation);
-            const newReservationDate = createdReservation.reservation_date;
-            
-            
-            setErrors({});
-            history.push(`/dashboard?date=${newReservationDate}`);
-            }
-        catch (error) {
-            console.log("error.message:", error.message);
-            if (error){
-                setErrors({ submit: error.message });
-            } else {
-                setErrors({submit: "Failed to submit reservation. Please try again." });
-            }
-        } 
-    } 
-          
+function Reservations ({ reservations, displayDate, onCancelReservation }) {
     return (
-<div className="new-reservation">
-  <h4>New Reservation</h4>
-  <form onSubmit={handleSubmit} className="reservation-form">
-    <div className="form-group">
-      <label htmlFor="first_name"></label>
-      <div className="name-inputs">
-        <input
-          type="text"
-          id="first_name"
-          name="first_name"
-          value={firstName}
-          onChange={(e) => {setFirstName(e.target.value)}}
-          placeholder="First Name"
-          required
-        />
-        <input
-          type="text"
-          id="last_name"
-          name="last_name"
-          value={lastName}
-          onChange={(e) => {setLastName(e.target.value)}}
-          placeholder="Last Name"
-          required
-        />
-      </div>
-    </div>
-
-    <div className="form-group">
-      <label htmlFor="mobile_number"></label>
-      <input
-        type="tel"
-        id="mobile_number"
-        name="mobile_number"
-        value={mobileNumber}
-        onChange={(e) => {setMobileNumber(e.target.value)}}
-        placeholder="Enter your phone number"
-        required
-      />
-    </div>
-
-    <div className="form-group">
-      <label htmlFor="reservation_date"></label>
-      <input
-        type="date"
-        id="reservation_date"
-        name="reservation_date"
-        value={reservationDate}
-        onChange={(e) => {setReservationDate(e.target.value)}}
-        required
-      />
-    </div>
-
-    <div className="form-group">
-      <label htmlFor="reservation_time"></label>
-      <input
-        type="time"
-        id="reservation_time"
-        name="reservation_time"
-        value={reservationTime}
-        onChange={(e) => {setReservationTime(e.target.value)}}
-        required
-      />
-    </div>
-
-    <div className="form-group">
-      <label htmlFor="people"></label>
-      <input
-        type="number"
-        id="people"
-        name="people"
-        value={people}
-        onChange={(e) => {setPeople(e.target.value)}}
-        placeholder="Number of people"
-        required
-      />
-    </div>
-
-    {/* Display ErrorAlert if there's a submission error */}
-    {errors.submit && <ErrorAlert error={{ message: errors.submit }} />}
-
-    <div className="form-buttons">
-      <Link to="/dashboard">
-        <button type="button" className="btn btn-secondary">Cancel</button>
-      </Link>
-      <button type="submit" className="btn btn-primary">Submit</button>
-    </div>
-  </form>
-</div>
-    )
-}
+        <div>
+          <h4>Reservations for {displayDate}</h4>
+          {reservations.length > 0 ? (
+            <table className="table table-bordered shadow table-outline">
+              {/* Table header */}
+              <thead>
+                <tr>
+                  <th style={{ height: "40px" }}>ID</th>
+                  <th style={{ height: "40px" }}>Name & Phone</th>
+                  <th style={{ height: "40px" }}>Date</th>
+                  <th style={{ height: "40px" }}>Time</th>
+                  <th style={{ height: "40px" }}>People</th>
+                  <th style={{ height: "40px" }}>Status</th>
+                  <th style={{ height: "40px" }}>Actions</th>
+                </tr>
+              </thead>
+              {/* Table body */}
+              <tbody>
+                {reservations.map((reservation) => (
+                  <tr key={reservation.reservation_id}>
+                    <td>{reservation.reservation_id}</td>
+                    <td>
+                      {`${reservation.first_name} ${reservation.last_name}`}
+                      <br />
+                      {reservation.mobile_number}
+                    </td>
+                    <td>{displayDate}</td>
+                    <td>{reservation.reservation_time}</td>
+                    <td>{reservation.people}</td>
+                    <td>{reservation.status}</td>
+                    <td>
+                      {(reservation.status === "booked") && (
+                        <div className="d-flex flex-column">
+                          <Link to={`/reservations/${reservation.reservation_id}/seat`} >
+                            <button
+                              type="button"
+                              className="btn btn-outline-info btn-sm mb-2 btn-block dash-buttons"
+                            > Seat </button>
+                          </Link>
+                          <Link to={`/reservations/${reservation.reservation_id}/edit`}>
+                            <button
+                              type="button"
+                              className="btn btn-outline-warning btn-sm mb-2 btn-block dash-buttons"
+                            > Edit </button>
+                          </Link>
+                          <button
+                            type="button"
+                            data-reservation-id-cancel={reservation.reservation_id}
+                            onClick={() => onCancelReservation(reservation.reservation_id)}
+                            className="btn btn-outline-danger btn-sm mb-2 btn-block dash-buttons"
+                          > Cancel </button>
+                        </div>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          ) : (
+            <p>No reservations for {displayDate}</p>
+          )}
+        </div>
+      );
+    }
 
 export default Reservations;

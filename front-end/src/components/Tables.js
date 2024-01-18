@@ -1,92 +1,50 @@
-import React, { useState } from "react";
-import { useHistory } from "react-router-dom";
-import ErrorAlert from "../layout/ErrorAlert";
-import { createTable,  } from "../utils/api";
+// Import necessary dependencies and components
+import React from "react";
 
-function Tables() {
-
-    const [tableName, setTableName] = useState("");
-    const [capacity, setCapacity] = useState("");
-    const history = useHistory();
-    const [errors, setErrors] = useState({});
-
-    const handleSubmit = async (event) => {
-            event.preventDefault();
-
-            let size = parseInt(capacity, 10);
-            console.log("SIZE: ", size);
-
-        const newTableData = {
-            data: {
-                table_name: tableName,
-                capacity: size,
-                reservation_id: null,
-            }
-        };
-
-        try {
-            await createTable(newTableData);
-            setErrors({});
-            
-            //history.goBack();
-            history.push("/dashboard");
-            }
-        catch (error) {
-            console.log("error.message:", error.message);
-            if (error){
-                setErrors({ submit: error.message });
-            } else {
-                setErrors({submit: "Failed to assign table. Please try again." });
-            }
-        }
-    }
-
-    return (
-<div class="add-table" style={{ maxWidth: '400px' }}>
-  <h4>Add A Table</h4>
-  <form onSubmit={handleSubmit}>
-    <div className="mb-3" style={{ maxWidth: '400px' }}>
-      <label htmlFor="table_name" className="form-label"></label>
-      <input
-        type="text"
-        id="table_name"
-        name="table_name"
-        value={tableName}
-        onChange={(e) => setTableName(e.target.value)}
-        placeholder="Table Name"
-        className="form-control"
-        required
-      />
-
-      <label htmlFor="capacity" className="form-label"></label>
-      <input
-        type="number"
-        id="capacity"
-        name="capacity"
-        value={capacity}
-        onChange={(e) => setCapacity(e.target.value)}
-        placeholder="Table Capacity"
-        className="form-control"
-        required
-      />
+// Define the TablesList component
+function Tables({ tables, onFinishTable }) {
+  return (
+    <div>
+      <h4>Tables</h4>
+        <table className="table table-bordered shadow table-outline">
+          {/* Table header */}
+          <thead>
+            <tr>
+              <th style={{ height: "49px", verticalAlign: "middle" }}>ID</th>
+              <th style={{ height: "49px", verticalAlign: "middle" }}>Table No</th>
+              <th style={{ height: "49px", verticalAlign: "middle" }}>Size</th>
+              <th style={{ height: "49px", verticalAlign: "middle" }}>Status</th>
+              <th style={{ height: "49px", verticalAlign: "middle" }}>Action</th>
+            </tr>
+          </thead>
+          {/* Table body */}
+          <tbody>
+            {tables.map((table) => (
+              <tr key={table.table_id}>
+                <td>{table.table_id}</td>
+                <td>{table.table_name}</td>
+                <td>{table.capacity}</td>
+                <td data-table-id-status={table.table_id}>
+                  {table.reservation_id ? <p data-table-id-status={table.table_id}> Occupied </p> : "Open"}
+                </td>
+                <td>
+                  {table.reservation_id && (
+                    <button
+                      type="button"
+                      data-table-id-finish={table.table_id}
+                      onClick={() => onFinishTable(table.table_id, table.reservation_id)}
+                      className="btn btn-outline-success btn-sm dash-buttons"
+                    >
+                      Finish
+                    </button>
+                  )}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
     </div>
-    {/* Display ErrorAlert if there's a submission error */}
-    {errors.submit && <ErrorAlert error={{ message: errors.submit }} />}
-    <div className="mb-3">
-      <button
-        type="button"
-        class="btn btn-outline-secondary"
-        onClick={() => history.goBack()}
-      >
-        Cancel
-      </button>
-      <button type="submit" class="btn btn-outline-primary ms-2">
-        Submit
-      </button>
-    </div>
-  </form>
-</div>
-    )
-}     
+  );
+}
 
-export default Tables;  
+export default Tables;

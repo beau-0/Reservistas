@@ -184,9 +184,10 @@ describe("US-04 - Seat reservation - E2E", () => {
         fullPage: true,
       });
 
-      console.log("123: Before clicking submit button");
+   
 
       try {
+        console.log("PAGE: ", page);
       await Promise.all([
         page.click("[type=submit]"),
         page.waitForNavigation({ waitUntil: "networkidle0" }),
@@ -194,6 +195,8 @@ describe("US-04 - Seat reservation - E2E", () => {
     } catch (error) {
       console.error("123:", error);
     } 
+
+
 
       console.log("123: After clicking submit button");
 

@@ -17,20 +17,6 @@ function Edit() {
         people: 0, 
       });
 
-
- /*     const formatTime = (timeWithSeconds) => {
-        const timeArray = timeWithSeconds.split(':');
-        const hours = timeArray[0];
-        const minutes = timeArray[1];
-        return `${hours}:${minutes}`;
-      };
-
-      const formatDate = (dateStringWithTime) => {
-        const dateWithoutTime = new Date(dateStringWithTime);
-        const formattedDate = dateWithoutTime.toISOString().split('T')[0];
-        return formattedDate;
-      };*/
-
     useEffect(() => {
       const abortController = new AbortController();
       const signal = abortController.signal;

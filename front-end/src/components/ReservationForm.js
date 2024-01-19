@@ -12,7 +12,7 @@ const ReservationForm = ({
   return (
     <form onSubmit={handleSubmit}>
       <div className="form-group">
-      {error && <ErrorAlert error={error} />}
+      <ErrorAlert error={error} />
 
         <label htmlFor="first_name">First Name:</label>
         <input

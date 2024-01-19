@@ -55,11 +55,8 @@ function Search() {
           </div>
           <button type="submit">Find</button>
         </form>
-  
-        {/* Display search results or "No reservations found" message */}
-        {searchPerformed && searchResults.length === 0 && !error && (
-          <p style={{ color: "red" }}>No reservations found.</p>
-        )}
+
+        <ErrorAlert error={error} />
   
         {/* Additional logic for displaying search results */}
         {searchResults.length > 0 && (

@@ -71,6 +71,8 @@ function Edit() {
           ...reservation,
           people: parseInt(reservation.people, 10), // Ensure "people" is a number
         };
+
+        console.log("UPDATED RES: ", updatedReservation);
         
         try {
           await updateReservation(reservation_id, updatedReservation, signal);

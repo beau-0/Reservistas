@@ -86,14 +86,14 @@ function validateReservationData(req, res, next) {
   }; 
   
     //US-02 validation
-    if (reservationDayOfWeekNumber === 2) {     // Tuesday is 2
+    if (new Date(reservationDate).getDay() === 2) {     // Tuesday is 2
       return res.status(400).json({
         error: "The restaurant is closed on Tuesdays. Please choose another date."
       });
     }
     
     //US-02 validation 
-    if (reservationDateObject < currentEasternDateObject) {
+    if (new Date(reservationDate).getTime() < new Date().getTime()) {
       return res.status(400).json({
         error: "Reservations cannot be made for any day prior to today. Please choose a today or a future date."
       });

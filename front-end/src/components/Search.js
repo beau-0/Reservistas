@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { listPhones } from "../utils/api";
 import ErrorAlert from "../layout/ErrorAlert";
+import { formatAsDate, formatAsTime } from "../utils/date-time";
 
 
 function Search() {
@@ -41,7 +42,7 @@ function Search() {
         <h2>Search Reservations</h2>
         <form onSubmit={handleSearch}>
           <div>
-            <label htmlFor="mobileNumber">Enter a customer's phone number:  </label>
+            <label htmlFor="mobileNumber">Enter a customer's phone number: </label>&nbsp;
             <input
               type="text"
               id="mobileNumber"
@@ -54,8 +55,6 @@ function Search() {
           </div>
           <button type="submit">Find</button>
         </form>
-
-        {error && <ErrorAlert error={error} />}
   
         {/* Display search results or "No reservations found" message */}
         {searchPerformed && searchResults.length === 0 && !error && (
@@ -100,8 +99,8 @@ function Search() {
                     <td>{result.first_name}</td>
                     <td>{result.last_name}</td>
                     <td>{result.mobile_number}</td>
-                    <td>{result.reservation_date}</td>
-                    <td>{result.reservation_time}</td>
+                    <td>{formatAsDate(result.reservation_date)}</td>
+                    <td>{formatAsTime(result.reservation_time)}</td>
                     <td>{result.people}</td>
                   </tr>
                 ))}

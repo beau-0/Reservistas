@@ -18,7 +18,7 @@ function Edit() {
       });
 
 
-      const formatTime = (timeWithSeconds) => {
+ /*     const formatTime = (timeWithSeconds) => {
         const timeArray = timeWithSeconds.split(':');
         const hours = timeArray[0];
         const minutes = timeArray[1];
@@ -29,7 +29,7 @@ function Edit() {
         const dateWithoutTime = new Date(dateStringWithTime);
         const formattedDate = dateWithoutTime.toISOString().split('T')[0];
         return formattedDate;
-      };
+      };*/
 
     useEffect(() => {
       const abortController = new AbortController();
@@ -38,15 +38,16 @@ function Edit() {
         const fetchReservation = async () => {
 
           try {
-            const reservationData = await getReservation(reservation_id); 
+            const reservationData = await getReservation(reservation_id, signal);
+            const originalReservation = reservationData.data; 
 
             setReservation({
-                first_name: reservationData.data.first_name,
-                last_name: reservationData.data.last_name,
-                mobile_number: parseInt(reservationData.data.mobile_number, 10),
-                reservation_date: formatDate(reservationData.data.reservation_date),
-                reservation_time: formatTime(reservationData.data.reservation_time),
-                people: parseInt(reservationData.data.people, 10),
+                first_name: originalReservation.first_name,
+                last_name: originalReservation.last_name,
+                mobile_number: parseInt(originalReservation.mobile_number, 10),
+                reservation_date: formatAsDate(originalReservation.reservation_date),
+                reservation_time: formatAsTime(originalReservation.reservation_time),
+                people: parseInt(originalReservation.people, 10),
                 status: "booked"
               });
 
@@ -88,7 +89,7 @@ function Edit() {
         try {
           await updateReservation(reservation_id, updatedReservation, signal);
           // Redirect to previous page
-          history.goBack();
+          history.push(`/dashboard?date=${reservation.reservation_date}`);
         } catch (error) {
           console.error('Error updating reservation:', error);
           setError(error);

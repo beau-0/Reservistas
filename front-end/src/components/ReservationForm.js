@@ -40,7 +40,7 @@ const ReservationForm = ({
       <div className="form-group">
         <label htmlFor="mobile_number">Mobile Number:</label>
         <input
-          type="number"
+          type="text"
           id="mobile_number"
           name="mobile_number"
           value={reservation.mobile_number}
@@ -58,6 +58,7 @@ const ReservationForm = ({
           value={reservation.reservation_date}
           onChange={handleChange}
           placeholder="Enter date"
+          pattern="\d{4}-\d{2}-\d{2}"
         />
       </div>
 
@@ -70,6 +71,7 @@ const ReservationForm = ({
           value={reservation.reservation_time}
           onChange={handleChange}
           placeholder="Enter time"
+          pattern="[0-9]{2}:[0-9]{2}"
         />
       </div>
 

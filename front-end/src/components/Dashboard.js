@@ -9,6 +9,7 @@ import ErrorAlert from "../layout/ErrorAlert";
 import useQuery from "../utils/useQuery";
 import Tables from './Tables';
 import ListReservations from "./ListReservations";
+import { today } from "../utils/date-time";
 
 /**
  * Defines the dashboard page.
@@ -17,12 +18,25 @@ import ListReservations from "./ListReservations";
  * @returns {JSX.Element}
  */
 
-function Dashboard({ date }) {
+function Dashboard() {
   const query = useQuery();
-  const [displayDate, setDisplayDate] = useState(query.get("date") || date);
+  const [displayDate, setDisplayDate] = useState(query.get("date") || today());
   const [reservations, setReservations] = useState([]);
   const [tables, setTables] = useState([]);
   const [error, setError] = useState({});
+
+  const dateObj = new Date(displayDate);
+  const dayIndex = dateObj.getDay();
+  const daysOfWeek = [
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+    "Sunday",
+  ];
+  const dayOfWeek = daysOfWeek[dayIndex];
 
   const abortController = new AbortController();
 
@@ -60,7 +74,7 @@ function Dashboard({ date }) {
     };
   }, [displayDate]);
 
-  function formatDateString(date, param) {
+  /*function formatDateString(date, param) {
     // Convert date string to a JavaScript Date object
     const currentDate = new Date(date);
 
@@ -71,22 +85,23 @@ function Dashboard({ date }) {
     const formattedDate = currentDate.toISOString().split("T")[0];
 
     return formattedDate;
-  }
+  }*/
 
   const handleToday = () => {
-    setDisplayDate(date);
+    setDisplayDate(new Date().toISOString().split("T")[0]);
   };
 
   const handlePreviousDay = () => {
-    // Use Date method (accounts for days in month) and convert back to yyyy-mm-dd
-    const nextDay = formatDateString(displayDate, -1);
-    setDisplayDate(nextDay);
+    const previousDay = new Date(displayDate);
+    previousDay.setDate(previousDay.getDate() - 1);
+    setDisplayDate(previousDay.toISOString().split("T")[0]);
   };
 
   const handleNextDay = () => {
     // Use Date method (accounts for days in month) and convert back to yyyy-mm-dd
-    const nextDay = formatDateString(displayDate, 1);
-    setDisplayDate(nextDay);
+    const nextDay = new Date(displayDate);
+    nextDay.setDate(nextDay.getDate() + 1);
+    setDisplayDate(nextDay.toISOString().split("T")[0]);
   };
 
   const handleCancelReservation = async (reservation_id) => {
@@ -186,6 +201,7 @@ function Dashboard({ date }) {
             reservations={reservations}
             displayDate={displayDate}
             onCancelReservation={handleCancelReservation}
+            dayOfWeek={dayOfWeek}
           />
         </section>
 

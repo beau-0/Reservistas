@@ -9,6 +9,7 @@ function NewTables() {
     const [capacity, setCapacity] = useState("");
     const history = useHistory();
     const [errors, setErrors] = useState({});
+    const abortController = new AbortController();
 
     const handleSubmit = async (event) => {
             event.preventDefault();
@@ -23,7 +24,7 @@ function NewTables() {
         };
 
         try {
-            await createTable(newTableData);
+            await createTable(newTableData, abortController.signal);
             setErrors({});
             
             //history.goBack();

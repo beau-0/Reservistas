@@ -70,31 +70,31 @@ export async function listReservations(params, signal) {
     .then(formatReservationTime);
 }
 
-export async function createReservation(reservationData) {
+export async function createReservation(reservationData, signal) {
   const response = await fetch(`${API_BASE_URL}/reservations/new`,
   {
     method: 'POST',
-    body: JSON.stringify(reservationData),
+    body: JSON.stringify({ data: reservationData }),
     headers: {
       'Content-Type': 'application/json',
     },
+    signal
   });
 
   if(!response.ok){
     const errorData = await response.json();
-    console.log(errorData);
     const errorMessage = errorData.error;
-    throw new Error(errorMessage || 'Failed to create reservation');
+    throw new Error(errorMessage );
   }
 
   const responseData = await response.json();
   return responseData.data;
 }
 
-export async function getReservation(reservation_id) {
+export async function getReservation(reservation_id, signal) {
   
   try {
-      const response = await fetch(`${API_BASE_URL}/reservations/${reservation_id}`);
+      const response = await fetch(`${API_BASE_URL}/reservations/${reservation_id}`, { signal });
       if (!response.ok) {
         console.error("Error fetching reservations:", response.json());
         throw new Error("Failed to find reservation.");
@@ -109,14 +109,15 @@ export async function getReservation(reservation_id) {
 }
 
 // Update the status (only) of the reservation. Bypasses the data checks of "edit" reservation. 
-export async function updateReservation(reservationId, updatedReservation) {
+export async function updateReservation(reservationId, updatedReservation, signal) {
   try {
     const response = await fetch(`${API_BASE_URL}/reservations/${reservationId}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ data: updatedReservation }  ),
+      body: JSON.stringify( { data: updatedReservation }),
+      signal,
     });
 
     if (!response.ok) {
@@ -135,7 +136,7 @@ export async function updateReservation(reservationId, updatedReservation) {
 
 
 // instructions require different endpoint for a status update than other reservation updates 
-export async function updateReservationStatus(reservationId, param, table_id) {
+export async function updateReservationStatus(reservationId, param, signal) {
 
   try {
     const response = await fetch(`${API_BASE_URL}/reservations/${reservationId}/status`, {
@@ -144,7 +145,8 @@ export async function updateReservationStatus(reservationId, param, table_id) {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify( param ),
-    });
+    }, signal
+    );
 
     return await response.json();
   } catch (error) {
@@ -153,7 +155,7 @@ export async function updateReservationStatus(reservationId, param, table_id) {
   };
 
 // TABLES
-export async function createTable (tableData) {
+export async function createTable (tableData, signal) {
 
   const response = await fetch(`${API_BASE_URL}/tables`,
   {
@@ -162,6 +164,7 @@ export async function createTable (tableData) {
     headers: {
       'Content-Type': 'application/json',
     },
+    signal
   });
 
   if(!response.ok){
@@ -189,7 +192,6 @@ export async function assignTable (table_id, reservation_id) {
 
   if(!response.ok){
     const errorData = await response.json();
-    console.log(errorData);
     const errorMessage = errorData.error;
     throw new Error(errorMessage || 'Failed to assign table.');
   }
@@ -254,9 +256,11 @@ export async function updateTable (table_id, reservation_id) {
 }
 
 // SEARCH
-export async function listPhones (phoneNumber) {
+export async function listPhones (phoneNumber, signal) {
   try {
-      const response = await fetch(`${API_BASE_URL}/reservations?mobile_number=${phoneNumber}`);
+      const response = await fetch(`${API_BASE_URL}/reservations?mobile_number=${phoneNumber}`,{
+        signal,
+      });
       if (!response.ok) {
           throw new Error(`Error fetching reservations: ${response.status} - ${response.statusText}`);
         }

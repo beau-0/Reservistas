@@ -6,10 +6,9 @@ import {
   listTables,
 } from "../utils/api";
 import ErrorAlert from "../layout/ErrorAlert";
-import { Link } from "react-router-dom";
 import useQuery from "../utils/useQuery";
-import Reservations from "./Reservations";
 import Tables from './Tables';
+import ListReservations from "./ListReservations";
 
 /**
  * Defines the dashboard page.
@@ -23,13 +22,13 @@ function Dashboard({ date }) {
   const [displayDate, setDisplayDate] = useState(query.get("date") || date);
   const [reservations, setReservations] = useState([]);
   const [tables, setTables] = useState([]);
-  const [errors, setErrors] = useState({});
+  const [error, setError] = useState({});
 
   const abortController = new AbortController();
 
   const loadDashboard = async () => {
     const abortController = new AbortController();
-    setErrors({});
+    setError({});
 
     try {
       // Fetch reservations for provided date
@@ -50,7 +49,7 @@ function Dashboard({ date }) {
       setTables(tablesData);
     } catch (error) {
       console.error("Error loading dashboard data:", error);
-      setErrors(error.message);
+      setError(error.message);
     }
   };
 
@@ -98,14 +97,15 @@ function Dashboard({ date }) {
     if (confirmation) {
       try {
         // Make PUT request to update reservation status to "cancelled"
-        await updateReservation(reservation_id, {
-          data: { status: "cancelled" },
-        });
+        await updateReservationStatus(reservation_id, {
+          data: { status: "cancelled" }},
+          abortController.signal,
+        );
 
         loadDashboard();
       } catch (error) {
         console.error("Error cancelling reservation:", error);
-        setErrors({
+        setError({
           cancel: "Failed to cancel reservation. Please try again.",
         });
       }
@@ -121,13 +121,14 @@ function Dashboard({ date }) {
       try {
         // Send DELETE request to release the table, update reservation to seated
         await updateReservationStatus(reservation_id, {
-          data: { status: "finished", table_id: table_id },
-        });
+          data: { status: "finished", table_id: table_id }},
+          abortController.signal,
+        );
 
         loadDashboard();
       } catch (error) {
         console.error("Error finishing table:", error);
-        setErrors({ message: error.message });
+        setError({ message: error.message });
       }
     }
   };
@@ -154,7 +155,7 @@ function Dashboard({ date }) {
         </div>
       </div>
 
-      {errors.message && <ErrorAlert error={errors} />}
+      {error.message && <ErrorAlert error={error} />} 
 
       {/* Date Navigation Buttons */}
       <div className="nav-section">
@@ -181,7 +182,7 @@ function Dashboard({ date }) {
       <div className="row">
         {/* Reservations Section - 2/3 width*/}
         <section className="reservations-section">
-          <Reservations
+          <ListReservations
             reservations={reservations}
             displayDate={displayDate}
             onCancelReservation={handleCancelReservation}

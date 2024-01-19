@@ -1,9 +1,19 @@
-import React from 'react';
+import React from "react";
+import ErrorAlert from "../layout/ErrorAlert";
 
-const ReservationForm = ({ reservation, handleChange, handleSubmit, handleCancel, errors }) => {
+const ReservationForm = ({
+  reservation,
+  handleChange,
+  handleSubmit,
+  handleCancel,
+  error,
+}) => {
+
   return (
     <form onSubmit={handleSubmit}>
       <div className="form-group">
+      {error && <ErrorAlert error={error} />}
+
         <label htmlFor="first_name">First Name:</label>
         <input
           type="text"
@@ -23,17 +33,19 @@ const ReservationForm = ({ reservation, handleChange, handleSubmit, handleCancel
           name="last_name"
           value={reservation.last_name}
           onChange={handleChange}
+          placeholder="Enter last name"
         />
       </div>
 
       <div className="form-group">
         <label htmlFor="mobile_number">Mobile Number:</label>
         <input
-          type="text"
+          type="number"
           id="mobile_number"
           name="mobile_number"
           value={reservation.mobile_number}
           onChange={handleChange}
+          placeholder="Enter phone"
         />
       </div>
 
@@ -45,6 +57,7 @@ const ReservationForm = ({ reservation, handleChange, handleSubmit, handleCancel
           name="reservation_date"
           value={reservation.reservation_date}
           onChange={handleChange}
+          placeholder="Enter date"
         />
       </div>
 
@@ -56,10 +69,11 @@ const ReservationForm = ({ reservation, handleChange, handleSubmit, handleCancel
           name="reservation_time"
           value={reservation.reservation_time}
           onChange={handleChange}
+          placeholder="Enter time"
         />
       </div>
 
-      <div className="form-group">
+      <div>
         <label htmlFor="people">Number of People:</label>
         <input
           type="number"
@@ -67,16 +81,9 @@ const ReservationForm = ({ reservation, handleChange, handleSubmit, handleCancel
           name="people"
           value={reservation.people}
           onChange={handleChange}
+          placeholder="Enter number of people"
         />
       </div>
-
-      {Object.keys(errors).length > 0 && (
-        <div className="alert alert-danger">
-          {Object.keys(errors).map((key) => (
-            <p key={key}>{errors[key]}</p>
-          ))}
-        </div>
-      )}
 
       <button type="submit">Submit</button>
       <button type="button" onClick={handleCancel}>

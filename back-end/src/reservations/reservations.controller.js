@@ -27,6 +27,7 @@ function validateReservationData(req, res, next) {
   
   let reservationTime = req.body.data.reservation_time;
   let reservationDate = req.body.data.reservation_date;
+  let { people } = req.body.data;
 
   if (Object.keys(req.body.data).length === 0 || !req.body.data) {
     return res.status(400).json({ error: 'Missing data.' });
@@ -48,8 +49,7 @@ function validateReservationData(req, res, next) {
     })
   }
 
-  const partySize = reservationData.people;  
-  if (typeof partySize !== 'number' || partySize <= 0) {
+  if (typeof people !== 'number' || people <= 0) {
     return res.status(400).json({ error: 'Invalid number of people.' });
   }
  

@@ -2,19 +2,21 @@ import React, { useState, useEffect } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import { getReservation, updateReservation } from '../utils/api';
 import ReservationForm from './ReservationForm';
+import { formatAsDate, formatAsTime } from "../utils/date-time";
 
 function Edit() {
     const history = useHistory();
     const { reservation_id } = useParams();
-    const [errors, setErrors] = useState(null);
+    const [error, setError] = useState(null);
     const [reservation, setReservation] = useState({
         first_name: '',
         last_name: '',
         mobile_number: '',
         reservation_date: '',
         reservation_time: '',
-        people: 1, // Set default value or fetch from reservationData
+        people: 0, 
       });
+
 
       const formatTime = (timeWithSeconds) => {
         const timeArray = timeWithSeconds.split(':');
@@ -30,14 +32,18 @@ function Edit() {
       };
 
     useEffect(() => {
+      const abortController = new AbortController();
+      const signal = abortController.signal;
+
         const fetchReservation = async () => {
+
           try {
             const reservationData = await getReservation(reservation_id); 
 
             setReservation({
                 first_name: reservationData.data.first_name,
                 last_name: reservationData.data.last_name,
-                mobile_number: reservationData.data.mobile_number,
+                mobile_number: parseInt(reservationData.data.mobile_number, 10),
                 reservation_date: formatDate(reservationData.data.reservation_date),
                 reservation_time: formatTime(reservationData.data.reservation_time),
                 people: parseInt(reservationData.data.people, 10),
@@ -46,38 +52,54 @@ function Edit() {
 
           } catch (error) {
             console.error('Error loading reservation data:', error);
-            setErrors(error.message);
+            setError(error);
           }
         };
         fetchReservation();
+        return () => abortController.abort();
       }, [reservation_id]);
 
   
       const handleChange = (event) => {
+        if (event.target.name === "people") {
+          setReservation((prevReservation) => ({
+            ...prevReservation,
+            [event.target.name]: Number(event.target.value),
+          }));
+        } else {
         const { name, value } = event.target;
         setReservation((prevReservation) => ({
           ...prevReservation,
           [name]: value,
         }));
-      };
+      }
+    };
 
       const handleSubmit = async (event) => {
         event.preventDefault();
-        // Add logic to update reservation based on user entered data
+        const abortController = new AbortController();
+        const signal = abortController.signal;
+
+        const updatedReservation = {
+          ...reservation,
+          people: parseInt(reservation.people, 10), // Ensure "people" is a number
+        };
+        
         try {
-          console.log("lets see: ", reservation)
-          await updateReservation(reservation_id, reservation);
+          await updateReservation(reservation_id, updatedReservation, signal);
           // Redirect to previous page
           history.goBack();
         } catch (error) {
           console.error('Error updating reservation:', error);
-          setErrors(error.message);
+          setError(error);
         }
+
+        return () => abortController.abort();
       };
       
       const handleCancel = () => {
         // Redirect to previous page
-        history.goBack();
+      history.goBack();
       };
 
       return (
@@ -88,7 +110,7 @@ function Edit() {
             handleChange={handleChange}
             handleSubmit={handleSubmit}
             handleCancel={handleCancel}
-            errors={errors}
+            error={error}
           />
         </div>
       );

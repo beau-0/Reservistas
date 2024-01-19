@@ -24,7 +24,7 @@ function Seat() {
 
     loadTables();
     return () => abortController.abort();
-  }, []);
+  }, [reservation_id]);
 
   function handleTableSelect({ target: { value } }) {
     setTableID(value);
@@ -62,21 +62,21 @@ function Seat() {
           onChange={handleTableSelect}
           value={tableID}
         >
-          <option value="0">Select a table</option>
+          <option value="">Select a table</option>
           {tables.map((table) => (
             <option key={table.table_id} value={table.table_id}>
               {`${table.table_name} - ${table.capacity}`}
             </option>
           ))}
         </select><br />
-        <button className="btn btn-warning" onClick={handleCancel}>
-          Cancel
-        </button>
         <button type="submit" className="btn btn-primary">
           Submit
         </button>
+        <button className="btn btn-warning" onClick={handleCancel}>
+          Cancel
+        </button>
       </form>
-      {errors && <div style={{ color: "red" }}>{errors}</div>}
+      {errors && <div className="alert alert-danger">{errors}</div>}
     </div>
   );
 }

@@ -1,20 +1,22 @@
 import React, { useState } from "react";
 import { listPhones } from "../utils/api";
-//import ErrorAlert from "../layout/ErrorAlert";
+import ErrorAlert from "../layout/ErrorAlert";
 
 
 function Search() {
     const [mobileNumber, setMobileNumber] = useState("");
     const [error, setError] = useState(null);
-    //const history = useHistory();
     const [searchResults, setSearchResults] = useState([]);
     const [searchPerformed, setSearchPerformed] = useState(false);
   
     const handleSearch = async (event) => {
       event.preventDefault();
+
+      const controller = new AbortController();
+      const signal = controller.signal;
   
       try {
-        const results = await listPhones(mobileNumber);
+        const results = await listPhones(mobileNumber, signal);
   
         setSearchPerformed(true);
   
@@ -52,6 +54,8 @@ function Search() {
           </div>
           <button type="submit">Find</button>
         </form>
+
+        {error && <ErrorAlert error={error} />}
   
         {/* Display search results or "No reservations found" message */}
         {searchPerformed && searchResults.length === 0 && !error && (

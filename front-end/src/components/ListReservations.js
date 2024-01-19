@@ -1,8 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import ErrorAlert from "../layout/ErrorAlert";
 
-function Reservations ({ reservations, displayDate, onCancelReservation }) {
+function ListReservations ({ reservations, displayDate, onCancelReservation }) {
     return (
         <div>
           <h4>Reservations for {displayDate}</h4>
@@ -22,7 +21,8 @@ function Reservations ({ reservations, displayDate, onCancelReservation }) {
               </thead>
               {/* Table body */}
               <tbody>
-                {reservations.map((reservation) => (
+                {reservations.map((reservation) => {
+                   return (
                   <tr key={reservation.reservation_id}>
                     <td>{reservation.reservation_id}</td>
                     <td>
@@ -59,7 +59,8 @@ function Reservations ({ reservations, displayDate, onCancelReservation }) {
                       )}
                     </td>
                   </tr>
-                ))}
+                )
+                      })}
               </tbody>
             </table>
           ) : (
@@ -69,4 +70,4 @@ function Reservations ({ reservations, displayDate, onCancelReservation }) {
       );
     }
 
-export default Reservations;
+export default ListReservations;

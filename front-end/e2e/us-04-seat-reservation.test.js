@@ -187,7 +187,6 @@ describe("US-04 - Seat reservation - E2E", () => {
    
 
       try {
-        console.log("PAGE: ", page);
       await Promise.all([
         page.click("[type=submit]"),
         page.waitForNavigation({ waitUntil: "networkidle0" }),
@@ -197,8 +196,6 @@ describe("US-04 - Seat reservation - E2E", () => {
     } 
 
 
-
-      console.log("123: After clicking submit button");
 
       await page.screenshot({
         path: ".screenshots/us-04-seat-reservation-submit-after.png",

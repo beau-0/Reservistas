@@ -1,12 +1,11 @@
-import React, { useState } from "react";
-import { Link, useHistory } from "react-router-dom";
-import ErrorAlert from "../layout/ErrorAlert";
+import React, { useState, useEffect } from "react";
+import { useHistory } from "react-router-dom";
 import { createReservation } from "../utils/api";
 import ReservationForm from "./ReservationForm";
 
 function NewReservations() {
   const history = useHistory();
-  const [errors, setErrors] = useState({});
+  const [error, setError] = useState(null);
   const [reservation, setReservation] = useState({
     first_name: "",
     last_name: "",
@@ -15,6 +14,16 @@ function NewReservations() {
     reservation_time: "",
     people: "",
   });
+
+  const abortController = new AbortController();
+  const signal = abortController.signal;
+
+  useEffect(() => {
+    const abortController = new AbortController();
+    return () => {
+      abortController.abort(); // Cleanup on component unmount
+    };
+  }, []);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -28,31 +37,25 @@ function NewReservations() {
     event.preventDefault();
 
     const newReservation = {
-      data: {
         first_name: reservation.first_name,
         last_name: reservation.last_name,
         mobile_number: reservation.mobile_number,
         reservation_date: reservation.reservation_date,
         reservation_time: reservation.reservation_time,
         people: Number(reservation.people),
-      },
-    };
+        status: "booked",
+      };
+    
 
     try {
-      const createdReservation = await createReservation(newReservation);
+      setError({ });
+      const createdReservation = await createReservation(newReservation,);
       const newReservationDate = createdReservation.reservation_date;
 
-      setErrors({});
       history.push(`/dashboard?date=${newReservationDate}`);
     } catch (error) {
-      console.log("error.message:", error.message);
-      if (error) {
-        setErrors({ submit: error.message });
-      } else {
-        setErrors({
-          submit: "Failed to submit reservation. Please try again.",
-        });
-      }
+      console.error("ERROR: ", error);
+      setError(error);
     }
   };
 
@@ -64,7 +67,7 @@ function NewReservations() {
         handleChange={handleChange}
         handleSubmit={handleSubmit}
         handleCancel={() => history.push("/dashboard")}
-        errors={errors}
+        error={error}
       />
     </div>
   );

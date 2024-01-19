@@ -76,7 +76,7 @@ function Seat() {
           Cancel
         </button>
       </form>
-      {errors && <div className="alert alert-danger">{errors}</div>}
+      {errors && errors.length > 0 && <div className="alert alert-danger">{errors}</div>}
     </div>
   );
 }

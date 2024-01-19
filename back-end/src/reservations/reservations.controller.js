@@ -92,12 +92,35 @@ function validateReservationData(req, res, next) {
       });
     }
     
+    const reservationDateTime = new Date(reservationDate);
+    const currentDateTime = new Date(); 
     //US-02 validation 
-    if (new Date(reservationDate).getTime() < new Date().getTime()) {
+    if (reservationDateTime.setHours(0, 0, 0, 0) < currentDateTime.setHours(0, 0, 0, 0)) {
       return res.status(400).json({
         error: "Reservations cannot be made for any day prior to today. Please choose a today or a future date."
       });
     }
+
+    /*
+    const formattedDate = new Date(`${reservationDate}T${reservationTime}:00Z`);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const numeralDay = formattedDate.getDay();
+
+    if (numeralDay === 2) {
+      return res.status(400).json({
+        error: "Reservations cannot be made for any day prior to today. Please choose a today or a future date."
+      });
+    }
+
+    if (reservationDate < today) {
+      return res.status(400).json({
+        error: "Reservations cannot be made for any day prior to today. Please choose a today or a future date."
+      });
+    }
+*/
+
+
 
     //US-03 validation
     const reservationMinutes = convertToMinutes(reservationTime);

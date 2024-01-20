@@ -10,6 +10,7 @@ import useQuery from "../utils/useQuery";
 import Tables from './Tables';
 import ListReservations from "./ListReservations";
 import { today } from "../utils/date-time";
+import image1 from "../images/coffee4.png";
 
 /**
  * Defines the dashboard page.
@@ -73,19 +74,6 @@ function Dashboard() {
       abortController.abort();
     };
   }, [displayDate]);
-
-  /*function formatDateString(date, param) {
-    // Convert date string to a JavaScript Date object
-    const currentDate = new Date(date);
-
-    // Perform the desired operation (e.g., add or subtract a day)
-    currentDate.setDate(currentDate.getDate() + param); // Example: Adding a day
-
-    // Convert the date back to the desired format (yyyy-mm-dd)
-    const formattedDate = currentDate.toISOString().split("T")[0];
-
-    return formattedDate;
-  }*/
 
   const handleToday = () => {
     setDisplayDate(new Date().toISOString().split("T")[0]);
@@ -153,18 +141,14 @@ function Dashboard() {
       <div className="main-content">
         {/* Jumbotron with an image */}
         <div className="jumbotron position-relative overflow-hidden">
-          <img
-            src="https://i.ibb.co/YhL5JDt/219199018-fb-cover-1-hhnnbbvvcc.jpg"
-            alt="Reservista Banner"
-            className="img-fluid w-100 h-100 object-cover"
-          />
+        <img src={image1} className="img-fluid w-100 h-100 object-cover" />
           <div className="overlay"></div>
           <div className="jumbotron-content text-center text-white position-absolute w-100">
             <h1
               className="display-4 font-lucida"
               style={{ marginTop: "auto", marginBottom: "auto" }}
             >
-              Reservista .. Your Table Awaits
+              
             </h1>
           </div>
         </div>
@@ -175,20 +159,23 @@ function Dashboard() {
       {/* Date Navigation Buttons */}
       <div className="nav-section">
         <button
+          style={{width: '120px'}}
           onClick={handlePreviousDay}
-          className="btn btn-warning nav-buttons btn-lg mr-2"
+          className="btn btn-warning nav-buttons mr-2 btn-arrow-left"
         >
           Previous Day
         </button>
         <button
+          style={{width: '140px'}}
           onClick={handleToday}
           className="btn btn-warning nav-buttons btn-lg mr-2"
         >
           Today
         </button>
         <button
+          style={{width: '120px'}}
           onClick={handleNextDay}
-          className="btn btn-warning nav-buttons btn-lg mr-2"
+          className="btn btn-warning nav-buttons mr-2"
         >
           Next Day
         </button>

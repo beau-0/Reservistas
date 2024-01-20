@@ -5,7 +5,7 @@ import React from "react";
 function Tables({ tables, onFinishTable }) {
   return (
     <div>
-      <h4>Tables</h4>
+      <h8>Active</h8><h4>Tables</h4>
         <table className="table table-bordered shadow table-outline">
           {/* Table header */}
           <thead>

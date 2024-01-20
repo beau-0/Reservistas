@@ -84,16 +84,18 @@ function validateReservationData(req, res, next) {
   const [hours, minutes] = timeString.split(":").map(Number);
     return hours * 60 + minutes;
   }; 
-  
+
+  const reservationDateTime = new Date(reservationDate);
+  const utcDay = reservationDateTime.getUTCDay();
+  const currentDateTime = new Date(); 
+
     //US-02 validation
-    if (new Date(reservationDate).getDay() === 2) {     // Tuesday is 2
+    if (utcDay === 2) {     // Tuesday is 2
       return res.status(400).json({
         error: "The restaurant is closed on Tuesdays. Please choose another date."
       });
     }
     
-    const reservationDateTime = new Date(reservationDate);
-    const currentDateTime = new Date(); 
     //US-02 validation 
     if (reservationDateTime.setHours(0, 0, 0, 0) < currentDateTime.setHours(0, 0, 0, 0)) {
       return res.status(400).json({

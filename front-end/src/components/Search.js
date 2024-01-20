@@ -38,7 +38,7 @@ function Search() {
     };
   
     return (
-      <div>
+      <div className="search">
         <h2>Search Reservations</h2>
         <form onSubmit={handleSearch}>
           <div>

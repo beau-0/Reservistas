@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 function ListReservations ({ reservations, displayDate, onCancelReservation, dayOfWeek }) {
     return (
         <div>
-          <h8>Reservations for</h8><h4> {dayOfWeek}, {displayDate}</h4>
+          <h8>Reservations for</h8><h4>{dayOfWeek}, {displayDate}</h4>
           {reservations.length > 0 ? (
             <table className="table table-bordered shadow table-outline">
               {/* Table header */}

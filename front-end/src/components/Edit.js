@@ -71,10 +71,9 @@ function Edit() {
           ...reservation,
           people: parseInt(reservation.people, 10), // Ensure "people" is a number
         };
-
-        console.log("UPDATED RES: ", updatedReservation);
         
         try {
+          setError(null);
           await updateReservation(reservation_id, updatedReservation, signal);
           // Redirect to previous page
           history.push(`/dashboard?date=${reservation.reservation_date}`);
@@ -92,7 +91,7 @@ function Edit() {
       };
 
       return (
-        <div>
+        <div className="edit">
           <h1>Edit Reservation</h1>
           <ReservationForm
             reservation={reservation}

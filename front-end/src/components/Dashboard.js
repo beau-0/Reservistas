@@ -24,7 +24,7 @@ function Dashboard() {
   const [displayDate, setDisplayDate] = useState(query.get("date") || today());
   const [reservations, setReservations] = useState([]);
   const [tables, setTables] = useState([]);
-  const [error, setError] = useState({});
+  const [error, setError] = useState(null);
 
   const dateObj = new Date(displayDate);
   const dayIndex = dateObj.getDay();
@@ -43,7 +43,7 @@ function Dashboard() {
 
   const loadDashboard = async () => {
     const abortController = new AbortController();
-    setError({});
+    setError(null);
 
     try {
       // Fetch reservations for provided date
@@ -154,8 +154,10 @@ function Dashboard() {
         </div>
       </div>
 
-      {error.message && <ErrorAlert error={error} />} 
-
+      <div className="tag">
+        <h8>Reservista, Inc.</h8>
+      </div>
+      <ErrorAlert error={error} />
       {/* Date Navigation Buttons */}
       <div className="nav-section">
         <button

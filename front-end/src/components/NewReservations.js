@@ -48,7 +48,7 @@ function NewReservations() {
     
 
     try {
-      setError({ });
+      setError(null);
       const createdReservation = await createReservation(newReservation,);
       const newReservationDate = createdReservation.reservation_date;
 
